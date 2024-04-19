@@ -1,5 +1,4 @@
 mod prime_num_gen;
-mod sieve_of_eratosthenes;
 
 use num_bigint::{BigUint, RandBigInt};
 

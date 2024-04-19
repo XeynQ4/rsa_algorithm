@@ -1,3 +1,5 @@
+mod sieve_of_eratosthenes;
+
 use super::*;
 
 fn n_bit_random_biguint(n: u32) -> BigUint {
@@ -57,10 +59,11 @@ fn is_miller_rabin_prime(n: &BigUint, iterations: u32) -> bool {
 }
 
 pub fn find_prime() -> BigUint {
-    let prime_candidate = gen_low_level_prime();
+    loop {
+        let prime_candidate = gen_low_level_prime();
 
-    if is_miller_rabin_prime(&prime_candidate, MILLER_RABIN_ITERATIONS) {
-        return prime_candidate;
+        if is_miller_rabin_prime(&prime_candidate, MILLER_RABIN_ITERATIONS) {
+            return prime_candidate;
+        }
     }
-    find_prime()
 }
