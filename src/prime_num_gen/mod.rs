@@ -1,6 +1,8 @@
 mod sieve_of_eratosthenes;
 
-use super::*;
+const MILLER_RABIN_ITERATIONS: u32 = 1;
+
+use num_bigint::{BigUint, RandBigInt};
 
 fn n_bit_random_biguint(n: u32) -> BigUint {
     let mut rng = rand::thread_rng();
@@ -10,11 +12,11 @@ fn n_bit_random_biguint(n: u32) -> BigUint {
     rng.gen_biguint_range(&min, &max)
 }
 
-fn gen_low_level_prime() -> BigUint {
+fn gen_low_level_prime(prime_size: u32) -> BigUint {
     let first_primes = sieve_of_eratosthenes::first_primes();
 
     loop {
-        let prime_candidate = n_bit_random_biguint(PRIME_SIZE);
+        let prime_candidate = n_bit_random_biguint(prime_size);
 
         for divisor in first_primes.iter() {
             if &prime_candidate % divisor == BigUint::from(0u32) {
@@ -58,9 +60,9 @@ fn is_miller_rabin_prime(n: &BigUint, iterations: u32) -> bool {
     true
 }
 
-pub fn find_prime() -> BigUint {
+pub fn find_prime(prime_size: u32) -> BigUint {
     loop {
-        let prime_candidate = gen_low_level_prime();
+        let prime_candidate = gen_low_level_prime(prime_size);
 
         if is_miller_rabin_prime(&prime_candidate, MILLER_RABIN_ITERATIONS) {
             return prime_candidate;
