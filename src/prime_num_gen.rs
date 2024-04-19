@@ -8,12 +8,23 @@ fn n_bit_random_biguint(n: u32) -> BigUint {
     rng.gen_biguint_range(&min, &max)
 }
 
+fn gen_low_level_prime() -> BigUint {
+    let first_primes = sieve_of_eratosthenes::first_primes();
+
+    loop {
+        let prime_candidate = n_bit_random_biguint(PRIME_SIZE);
+
+        for divisor in first_primes.iter() {
+            if &prime_candidate % divisor == BigUint::from(0u32) {
+                break;
+            }
+        }
+        return prime_candidate;
+    }
+}
+
 fn is_miller_rabin_prime(n: &BigUint, iterations: u32) -> bool {
     let mut rng = rand::thread_rng();
-
-    if n % 2u32 == BigUint::from(0u32) {
-        return false;
-    }
 
     let n_minus_one = n - 1u32;
     let mut s: u32 = 0;
@@ -24,20 +35,20 @@ fn is_miller_rabin_prime(n: &BigUint, iterations: u32) -> bool {
         s += 1;
     }
 
-    let mut y = BigUint::from(0u32);
+    let mut y: BigUint;
 
-    for _ in 0..iterations {
+    'outer: for _ in 0..iterations {
         let a = rng.gen_biguint_range(&BigUint::from(2u32), &n_minus_one);
         let mut x = a.modpow(&d, n);
 
-        for _ in 0..s {
-            y = x.modpow(&BigUint::from(2u32), n);
-            if y == BigUint::from(1u32) && x != BigUint::from(1u32) && x != n_minus_one {
-                return false;
+        if x != BigUint::from(1u32) && x != n_minus_one {
+            for _ in 0..s {
+                y = x.modpow(&BigUint::from(2u32), n);
+                if y == n_minus_one {
+                    continue 'outer;
+                }
+                x = y.clone();
             }
-            x = y.clone();
-        }
-        if y != BigUint::from(1u32) {
             return false;
         }
     }
@@ -46,11 +57,10 @@ fn is_miller_rabin_prime(n: &BigUint, iterations: u32) -> bool {
 }
 
 pub fn find_prime() -> BigUint {
-    let prime_candidate = n_bit_random_biguint(PRIME_SIZE);
+    let prime_candidate = gen_low_level_prime();
 
     if is_miller_rabin_prime(&prime_candidate, MILLER_RABIN_ITERATIONS) {
-        prime_candidate
-    } else {
-        find_prime()
+        return prime_candidate;
     }
+    find_prime()
 }

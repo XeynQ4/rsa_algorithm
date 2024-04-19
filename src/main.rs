@@ -1,10 +1,11 @@
 mod prime_num_gen;
+mod sieve_of_eratosthenes;
 
 use num_bigint::{BigUint, RandBigInt};
 
 const RSA_SIZE: u32 = 4096;
 const PRIME_SIZE: u32 = RSA_SIZE / 2;
-const MILLER_RABIN_ITERATIONS: u32 = 64;
+const MILLER_RABIN_ITERATIONS: u32 = 1;
 
 fn main() {
     let p = prime_num_gen::find_prime();
