@@ -1,14 +1,16 @@
 mod sieve_of_eratosthenes;
 
-const MILLER_RABIN_ITERATIONS: u32 = 1;
-
 use num_bigint::{BigUint, RandBigInt};
+use rand;
+
+const MILLER_RABIN_ITERATIONS: u32 = 1;
 
 fn n_bit_random_biguint(n: u32) -> BigUint {
     let mut rng = rand::thread_rng();
 
     let min = (BigUint::from(2u32).pow(n - 1)) + 1u32;
     let max = (BigUint::from(2u32).pow(n)) - 1u32;
+
     rng.gen_biguint_range(&min, &max)
 }
 
