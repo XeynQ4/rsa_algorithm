@@ -40,7 +40,6 @@ fn is_miller_rabin_prime(n: &BigUint, iterations: u32) -> bool {
         d >>= 1;
         s += 1;
     }
-
     let mut y: BigUint;
 
     'outer: for _ in 0..iterations {
